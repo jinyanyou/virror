@@ -556,15 +556,19 @@
   .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
   .cam {
-    position: fixed; inset: 0; z-index: 60;
-    display: flex; flex-direction: column;
-    background: #000; color: #fff;
+    position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 60;
+    background: #000; color: #fff; overflow: hidden;
   }
   .cam[hidden] { display: none; }
+  /* 위·아래 버튼은 카메라 화면 위에 겹쳐서 (화면을 최대한 크게) */
   .cam-top {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+    position: absolute; left: 0; right: 0; top: 0; z-index: 2;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: calc(12px + env(safe-area-inset-top)) 14px 14px;
+    background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
   }
+  .cam-top > :first-child { justify-self: start; }
+  .cam-top > :last-child { justify-self: end; }
   .cam-icon {
     width: 40px; height: 40px; border-radius: 50%; border: 0;
     display: grid; place-items: center; color: #fff;
@@ -574,7 +578,7 @@
   .cam-icon svg { width: 20px; height: 20px; }
   .cam-badge {
     font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 99px;
-    background: rgba(255, 255, 255, .14); color: #bdeefc;
+    background: rgba(0, 0, 0, .35); color: #bdeefc;
   }
   .cam-badge.off { color: rgba(255, 255, 255, .6); }
   .cam-rec {
@@ -585,18 +589,31 @@
   .cam-rec[hidden] { display: none; }
   .cam-rec i { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: blink 1s infinite; }
   @keyframes blink { 50% { opacity: .2; } }
-  .cam-view { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; }
-  .cam-view video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+  .cam-view { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+  .cam-frame { position: absolute; overflow: hidden; background: #111; }
+  .cam-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .cam-ratio { display: flex; gap: 4px; padding: 3px; border-radius: 99px; background: rgba(0, 0, 0, .35); }
+  .cam-ratio button {
+    border: 0; background: transparent; color: rgba(255, 255, 255, .75);
+    font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 99px;
+    font-variant-numeric: tabular-nums;
+  }
+  .cam-ratio button[aria-pressed="true"] { background: #fff; color: #000; }
+  .cam-ratio[hidden] { display: none; }
   .cam-msg {
     position: absolute; left: 20px; right: 20px; top: 50%; transform: translateY(-50%);
     margin: 0; text-align: center; font-size: 15px; line-height: 1.6; white-space: pre-line;
     background: rgba(255, 255, 255, .1); padding: 18px; border-radius: 16px;
   }
   .cam-msg[hidden] { display: none; }
-  .cam-bottom { padding: 14px 16px calc(22px + env(safe-area-inset-bottom)); }
+  .cam-bottom {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 28px 16px calc(22px + env(safe-area-inset-bottom));
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .55));
+  }
   .cam-modes { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
   .cam-modes button {
-    border: 0; background: transparent; color: rgba(255, 255, 255, .6);
+    border: 0; background: rgba(0, 0, 0, .25); color: rgba(255, 255, 255, .8);
     font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 99px;
   }
   .cam-modes button[aria-pressed="true"] { color: #000; background: #fff; }
@@ -609,7 +626,8 @@
   }
   .cam-side svg {
     width: 50px; height: 50px; padding: 13px; border-radius: 50%;
-    background: rgba(255, 255, 255, .14);
+    background: rgba(0, 0, 0, .35);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   }
   .cam-side[aria-pressed="true"] svg { background: #5fd6f2; color: #04202b; }
   .cam-side:disabled { opacity: .4; }
@@ -625,6 +643,23 @@
   .shutter:active span { transform: scale(.92); }
   .cam.video .shutter span { background: #ff3b30; }
   .cam.recording .shutter span { width: 30px; height: 30px; border-radius: 8px; }
+  .cam-toast {
+    position: absolute; left: 50%; top: calc(80px + env(safe-area-inset-top)); z-index: 3;
+    transform: translate(-50%, -10px); opacity: 0;
+    padding: 9px 16px; border-radius: 99px;
+    background: rgba(0, 0, 0, .6); color: #fff; font-size: 14px; font-weight: 700;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    transition: opacity .2s ease, transform .2s ease; pointer-events: none; white-space: nowrap;
+  }
+  .cam-toast.on { opacity: 1; transform: translate(-50%, 0); }
+  .cam-save {
+    position: absolute; left: 50%; top: calc(80px + env(safe-area-inset-top)); z-index: 3;
+    transform: translateX(-50%);
+    border: 0; padding: 12px 20px; border-radius: 99px;
+    background: #5fd6f2; color: #04202b; font-size: 15px; font-weight: 800;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  }
+  .cam-save[hidden] { display: none; }
   .cam-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
   .cam-flash.on { opacity: .8; transition: none; }
 
@@ -725,7 +760,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7.5 6.5H4.5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
         </span>
         <b>카메라</b>
-        <small>찍는 순간 좌우반전</small>
+        <small>찍는 순간 좌우반전 · 바로 저장</small>
       </button>
       <label class="choice media-choice" id="drop">
         <input type="file" id="file" accept="image/*,video/*" hidden>
@@ -741,7 +776,7 @@
     <div class="features">
       <div class="feature">
         <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7.5 6.5H4.5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
-        <div><b>찍으면서 반전</b><small>따로 변환할 필요 없이 바로 저장</small></div>
+        <div><b>찍으면 바로 저장</b><small>변환 기다릴 필요 없이 기기에 저장</small></div>
       </div>
       <div class="feature">
         <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
@@ -870,18 +905,24 @@
 </div>
 
 <div class="cam" id="cam" hidden>
-  <div class="cam-top">
+  <div class="cam-top" id="camTop">
     <button class="cam-icon" id="camClose" type="button" aria-label="닫기">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
+    <div class="cam-ratio" id="camRatio">
+      <button type="button" data-r="3:4" aria-pressed="true">3:4</button>
+      <button type="button" data-r="9:16" aria-pressed="false">9:16</button>
+    </div>
     <div class="cam-rec" id="camRec" hidden><i></i><span id="camTime">0:00</span></div>
     <span class="cam-badge" id="camBadge">좌우반전 ON</span>
   </div>
-  <div class="cam-view">
-    <video id="camVideo" playsinline muted autoplay></video>
+  <div class="cam-view" id="camView">
+    <div class="cam-frame" id="camFrame"><video id="camVideo" playsinline muted autoplay></video></div>
     <p class="cam-msg" id="camMsg" hidden></p>
+    <div class="cam-toast" id="camToast"></div>
+    <button class="cam-save" id="camSave" type="button" hidden>탭해서 사진 앨범에 저장</button>
   </div>
-  <div class="cam-bottom">
+  <div class="cam-bottom" id="camBottom">
     <div class="cam-modes" id="camModes">
       <button type="button" data-mode="photo" aria-pressed="true">사진</button>
       <button type="button" data-mode="video" aria-pressed="false">동영상</button>
@@ -1537,7 +1578,49 @@ drop.addEventListener('drop', (e) => load(e.dataTransfer.files[0]));
 // 페이지 아무 곳에 떨어뜨려도 열리게
 /* ───────── 카메라로 바로 찍기 ───────── */
 const camEl = $('cam'), camVideo = $('camVideo'), camMsgEl = $('camMsg');
-const cam = { stream: null, facing: 'user', mode: 'photo', flip: true, rec: null, raf: 0, timer: 0, discard: false };
+const cam = { stream: null, facing: 'user', mode: 'photo', flip: true, rec: null, raf: 0, timer: 0, discard: false,
+              ratio: '3:4' };
+
+// 세로 화면이면 세로 비율(3:4, 9:16), 가로면 가로 비율(4:3, 16:9)
+const portraitScreen = () => window.matchMedia('(orientation: portrait)').matches;
+function ratioValue(streamPortrait) {
+  const [a, b] = cam.ratio.split(':').map(Number); // a:b = 가로:세로 (세로 기준)
+  return streamPortrait ? a / b : b / a;
+}
+// 카메라 영상에서 잘라낼 가운데 영역 (가로/세로 비율 r)
+function camCrop() {
+  const vw = camVideo.videoWidth, vh = camVideo.videoHeight;
+  if (!vw || !vh) return null;
+  const r = ratioValue(vh >= vw);
+  let cw = vw, ch = vh;
+  if (vw / vh > r) cw = vh * r; else ch = vw / r;
+  cw = Math.round(cw) & ~1; ch = Math.round(ch) & ~1;
+  return { sx: Math.round((vw - cw) / 2), sy: Math.round((vh - ch) / 2), w: cw, h: ch, r };
+}
+// 미리보기 틀을 고른 비율로 맞춤
+function camLayout() {
+  const frame = $('camFrame');
+  const c = camCrop();
+  const r = c ? c.r : ratioValue(portraitScreen());
+  const W = camEl.clientWidth, H = camEl.clientHeight;
+  const topH = $('camTop').offsetHeight, botH = $('camBottom').offsetHeight;
+  // 화면에 들어가는 최대 크기 (보통 가로를 꽉 채움)
+  const w = Math.min(W, H * r), h = w / r;
+  // 위·아래 버튼 사이에 들어가면 그 사이 가운데, 아니면 화면 가운데 (버튼이 영상 위에 겹침)
+  const mid = H - topH - botH;
+  const top = h <= mid ? topH + (mid - h) / 2 : (H - h) / 2;
+  frame.style.width = w + 'px';
+  frame.style.height = h + 'px';
+  frame.style.left = (W - w) / 2 + 'px';
+  frame.style.top = top + 'px';
+  frame.style.borderRadius = w < W - 1 ? '16px' : '0';
+  // 버튼 이름도 방향에 맞게 (가로 웹캠이면 4:3 / 16:9)
+  const portrait = c ? c.r < 1 : portraitScreen();
+  document.querySelectorAll('#camRatio button').forEach((b) => {
+    b.textContent = portrait ? b.dataset.r : b.dataset.r.split(':').reverse().join(':');
+    b.setAttribute('aria-pressed', b.dataset.r === cam.ratio);
+  });
+}
 
 function camMsg(text) { camMsgEl.textContent = text || ''; camMsgEl.hidden = !text; }
 
@@ -1554,7 +1637,11 @@ async function camStart() {
     camMsg('이 브라우저에서는 카메라를 쓸 수 없어요.\nhttps 주소로 접속했는지, 최신 브라우저인지 확인해 주세요.');
     return;
   }
-  const video = { facingMode: cam.facing, width: { ideal: 1920 }, height: { ideal: 1080 } };
+  // 고른 비율에 맞는 해상도를 요청 (그래야 잘라낸 뒤에도 화질이 덜 떨어짐)
+  const long = 1920, short = cam.ratio === '3:4' ? 1440 : 1080;
+  const video = portraitScreen()
+    ? { facingMode: cam.facing, width: { ideal: short }, height: { ideal: long } }
+    : { facingMode: cam.facing, width: { ideal: long }, height: { ideal: short } };
   try {
     cam.stream = await navigator.mediaDevices.getUserMedia({ video, audio: cam.mode === 'video' });
   } catch (e) {
@@ -1571,7 +1658,9 @@ async function camStart() {
     }
   }
   camVideo.srcObject = cam.stream;
+  camVideo.onloadedmetadata = camLayout;
   try { await camVideo.play(); } catch (e) {}
+  camLayout();
 }
 
 function camUpdateUI() {
@@ -1586,6 +1675,7 @@ function camUpdateUI() {
     b.disabled = !!cam.rec;
   });
   $('camFlip').disabled = $('camSwitch').disabled = !!cam.rec;
+  $('camRatio').hidden = !!cam.rec; // 녹화 중엔 타이머가 그 자리에
   $('camShutter').setAttribute('aria-label', cam.mode === 'photo' ? '사진 찍기' : cam.rec ? '녹화 멈추기' : '녹화 시작');
 }
 
@@ -1593,12 +1683,15 @@ function camOpen() {
   camEl.hidden = false;
   document.body.style.overflow = 'hidden';
   camUpdateUI();
+  camLayout();
   camStart();
 }
 
 function camClose() {
   if (cam.rec) { cam.discard = true; cam.rec.stop(); }
   camStop();
+  cam.pending = null;
+  $('camSave').hidden = true;
   camEl.hidden = true;
   document.body.style.overflow = '';
 }
@@ -1608,35 +1701,53 @@ function stamp() {
   return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
 
-// 찍은 결과: 카메라 닫고 → 편집 화면에 열고 → 바로 저장
-function camDone(file) {
-  camClose();
-  load(file);
-  state.h = false; // 이미 반전돼서 찍혔으니 편집 화면에선 추가 반전 없음
-  inName.value = baseName(file.name);
-  applyPreview();
-  download(file, file.name);
+// 찍은 결과: 카메라 화면에 머문 채로 바로 기기에 저장
+async function camDone(file) {
+  $('camSave').hidden = true;
+  if (canShareFile(file)) {
+    // 아이폰: 웹에서 앨범에 직접 저장은 막혀 있어서, 셔터 누른 직후 공유 창을 바로 띄움
+    try {
+      await navigator.share({ files: [file] });
+      camToast('저장했어요');
+    } catch (e) {
+      if (e.name === 'AbortError') { camToast('저장을 취소했어요'); return; }
+      // 셔터 누른 지 오래돼서 공유 창을 못 띄운 경우: 한 번 탭해서 저장
+      cam.pending = file;
+      $('camSave').hidden = false;
+    }
+    return;
+  }
+  saveToFiles(file, file.name);
+  camToast(file.type.startsWith('video/') ? '동영상을 저장했어요' : '사진을 저장했어요');
+}
+
+function camToast(text) {
+  const t = $('camToast');
+  t.textContent = text;
+  t.classList.add('on');
+  clearTimeout(cam.toastTimer);
+  cam.toastTimer = setTimeout(() => t.classList.remove('on'), 1800);
 }
 
 function camFlash() {
   const f = document.createElement('div');
   f.className = 'cam-flash on';
-  camVideo.parentNode.appendChild(f);
+  $('camFrame').appendChild(f);
   requestAnimationFrame(() => requestAnimationFrame(() => { f.className = 'cam-flash'; }));
   setTimeout(() => f.remove(), 400);
 }
 
-function drawCam(ctx, w, h) {
-  ctx.setTransform(cam.flip ? -1 : 1, 0, 0, 1, cam.flip ? w : 0, 0);
-  ctx.drawImage(camVideo, 0, 0, w, h);
+function drawCam(ctx, c) {
+  ctx.setTransform(cam.flip ? -1 : 1, 0, 0, 1, cam.flip ? c.w : 0, 0);
+  ctx.drawImage(camVideo, c.sx, c.sy, c.w, c.h, 0, 0, c.w, c.h);
 }
 
 function camPhoto() {
-  const w = camVideo.videoWidth, h = camVideo.videoHeight;
-  if (!w) return;
+  const crop = camCrop();
+  if (!crop) return;
   const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  drawCam(c.getContext('2d'), w, h);
+  c.width = crop.w; c.height = crop.h;
+  drawCam(c.getContext('2d'), crop);
   camFlash();
   c.toBlob((blob) => {
     if (blob) camDone(new File([blob], `virror_${stamp()}.jpg`, { type: 'image/jpeg' }));
@@ -1647,12 +1758,12 @@ function camRecordStart() {
   const picked = pickVideoMime();
   if (!picked) { camMsg('이 브라우저는 동영상 녹화를 지원하지 않아요.'); return; }
   const [mime, ext] = picked;
-  const w = camVideo.videoWidth, h = camVideo.videoHeight;
-  if (!w) return;
+  const crop = camCrop();
+  if (!crop) return;
   const c = document.createElement('canvas');
-  c.width = w; c.height = h;
+  c.width = crop.w; c.height = crop.h;
   const ctx = c.getContext('2d');
-  const loop = () => { drawCam(ctx, w, h); cam.raf = requestAnimationFrame(loop); };
+  const loop = () => { drawCam(ctx, crop); cam.raf = requestAnimationFrame(loop); };
   loop();
 
   const out = c.captureStream(30);
@@ -1681,6 +1792,22 @@ function camRecordStart() {
 }
 
 $('camOpen').onclick = camOpen;
+$('camSave').onclick = async () => {
+  const f = cam.pending;
+  $('camSave').hidden = true;
+  if (!f) return;
+  try { await navigator.share({ files: [f] }); camToast('저장했어요'); }
+  catch (e) { if (e.name !== 'AbortError') saveToFiles(f, f.name); }
+};
+document.querySelectorAll('#camRatio button').forEach((b) => {
+  b.onclick = () => {
+    if (cam.rec || cam.ratio === b.dataset.r) return;
+    cam.ratio = b.dataset.r;
+    camLayout();
+    camStart(); // 비율에 맞는 해상도로 다시 요청
+  };
+});
+window.addEventListener('resize', () => { if (!camEl.hidden) camLayout(); });
 $('camClose').onclick = camClose;
 $('camFlip').onclick = () => { cam.flip = !cam.flip; camUpdateUI(); };
 $('camSwitch').onclick = () => { cam.facing = cam.facing === 'user' ? 'environment' : 'user'; camStart(); };
