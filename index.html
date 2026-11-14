@@ -140,8 +140,7 @@
   .formula .op { color: var(--muted); font-weight: 700; }
   .formula .eq {
     color: var(--accent-text);
-    background: linear-gradient(135deg, var(--accent), var(--accent-2)); /* Safari 15 이하용 */
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--accent-2)));
+    background: linear-gradient(135deg, var(--accent), #2aa3c8);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4);
     letter-spacing: -0.01em;
   }
@@ -293,7 +292,6 @@
     position: absolute; left: 14px; top: 14px; z-index: 1;
     font-size: 12px; font-weight: 600;
     background: var(--panel);
-    background: color-mix(in srgb, var(--panel) 85%, transparent);
     backdrop-filter: blur(6px);
     border: 1px solid var(--line);
     padding: 4px 10px; border-radius: 99px; color: var(--muted);
@@ -418,8 +416,7 @@
   .btn.primary {
     position: relative; overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .35); color: var(--accent-text);
-    background: linear-gradient(135deg, var(--accent), #2aa3c8); /* Safari 15 이하용 */
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 65%, var(--accent-2)));
+    background: linear-gradient(135deg, var(--accent), #2aa3c8);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 8px 20px rgba(var(--accent-rgb), .30);
     text-shadow: 0 1px 1px rgba(0, 0, 0, .12);
   }
@@ -694,7 +691,6 @@
     position: fixed; inset: 0; z-index: 50;
     display: none; place-items: center;
     background: rgba(238, 245, 248, .75);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
     backdrop-filter: blur(6px);
   }
   .dragcover div {
