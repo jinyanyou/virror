@@ -180,7 +180,7 @@
             mask-image: linear-gradient(to top, rgba(0,0,0,.35), transparent 70%);
     pointer-events: none;
   }
-  .hero p { color: var(--muted); font-size: clamp(13px, 1.6vw, 15px); margin: 44px auto 32px; max-width: 520px; }
+  .hero p { color: var(--muted); font-size: clamp(13px, 1.6vw, 15px); margin: 44px auto 28px; max-width: 520px; }
 
   .drop {
     display: block;
@@ -191,7 +191,7 @@
     -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius);
-    padding: 44px 20px 36px;
+    padding: 28px 20px 24px;
     text-align: center;
     cursor: pointer;
     box-shadow: var(--glass-hi), var(--shadow-lg);
@@ -209,20 +209,20 @@
   .drop:hover::before, .drop.over::before { border-color: var(--accent); background: var(--accent-soft); }
   .drop:focus-within::before { border-color: var(--accent); }
   .drop .icon {
-    width: 64px; height: 64px; margin: 0 auto 16px;
-    border-radius: 18px;
+    width: 48px; height: 48px; margin: 0 auto 12px;
+    border-radius: 14px;
     display: grid; place-items: center;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     color: #fff;
     box-shadow: 0 10px 24px rgba(var(--accent-rgb), .35);
   }
-  .drop .icon svg { width: 30px; height: 30px; }
-  .drop strong { display: block; font-size: 19px; letter-spacing: -0.02em; margin-bottom: 6px; position: relative; }
+  .drop .icon svg { width: 24px; height: 24px; }
+  .drop strong { display: block; font-size: 17px; letter-spacing: -0.02em; margin-bottom: 6px; position: relative; }
   .drop .hint { color: var(--muted); font-size: 14px; position: relative; }
   .pill {
     position: relative;
     display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 20px;
+    margin-top: 16px;
     background: var(--text); color: var(--bg);
     font-weight: 600; font-size: 15px;
     padding: 11px 22px; border-radius: 99px;
@@ -469,29 +469,91 @@
 
   /* ── 카메라 ── */
   .cam-open {
-    display: flex; align-items: center; gap: 14px; width: 100%;
-    max-width: 720px; margin: 14px auto 0; padding: 14px 18px;
-    text-align: left; color: var(--text);
-    background: var(--panel);
-    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 18px;
-    box-shadow: var(--glass-hi), var(--shadow);
-    transition: transform .15s ease;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 18px; width: 100%;
+    max-width: 720px; margin: 0 auto; padding: 26px 26px;
+    text-align: left; color: #fff;
+    background: linear-gradient(135deg, var(--accent), #2aa3c8 60%, var(--accent-2));
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 20px 44px rgba(var(--accent-rgb), .35);
+    transition: transform .15s ease, box-shadow .2s ease;
   }
+  .cam-open::before { /* 유리 반사광 */
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 50%;
+    background: linear-gradient(rgba(255, 255, 255, .22), rgba(255, 255, 255, 0));
+    pointer-events: none;
+  }
+  .cam-open:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 24px 52px rgba(var(--accent-rgb), .45); }
   .cam-open:hover { transform: translateY(-1px); }
   .cam-open:active { transform: scale(.99); }
   .cam-open-ico {
-    flex: none; width: 44px; height: 44px; border-radius: 14px;
+    position: relative;
+    flex: none; width: 64px; height: 64px; border-radius: 20px;
     display: grid; place-items: center; color: #fff;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: 0 6px 16px rgba(var(--accent-rgb), .3);
+    background: rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, .45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
   }
-  .cam-open-ico svg { width: 22px; height: 22px; }
-  .cam-open-txt { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .cam-open-txt b { font-size: 16px; letter-spacing: -0.02em; }
-  .cam-open-txt small { font-size: 13px; color: var(--muted); }
-  .cam-open .chev { width: 20px; height: 20px; color: var(--muted); flex: none; }
+  .cam-open-ico svg { width: 32px; height: 32px; }
+  .cam-open-txt { position: relative; flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+  .cam-open-txt b { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+  .cam-open-txt small { font-size: 14px; color: rgba(255, 255, 255, .85); }
+  .cam-open .chev { position: relative; width: 26px; height: 26px; color: #fff; flex: none; }
+
+  .choices {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    max-width: 720px; margin: 0 auto;
+  }
+  .choice {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+    min-height: 200px; padding: 24px;
+    text-align: left; cursor: pointer; font: inherit;
+    border-radius: var(--radius);
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .choice:hover { transform: translateY(-2px); }
+  .choice:active { transform: scale(.98); }
+  .choice::before { /* 유리 반사광 */
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 50%;
+    background: linear-gradient(rgba(255, 255, 255, .22), rgba(255, 255, 255, 0));
+    pointer-events: none;
+  }
+  .choice-ico {
+    position: relative; flex: none;
+    width: 60px; height: 60px; border-radius: 18px; margin-bottom: auto;
+    display: grid; place-items: center;
+  }
+  .choice-ico svg { width: 30px; height: 30px; }
+  .choice b { position: relative; margin-top: 20px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+  .choice small { position: relative; font-size: 14px; }
+  .cam-choice {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #2aa3c8 60%, var(--accent-2));
+    border: 1px solid rgba(255, 255, 255, .45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 20px 44px rgba(var(--accent-rgb), .35);
+  }
+  .cam-choice .choice-ico { background: rgba(255, 255, 255, .2); border: 1px solid rgba(255, 255, 255, .45); }
+  .cam-choice small { color: rgba(255, 255, 255, .85); }
+  .media-choice {
+    color: var(--text);
+    background: var(--panel);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-hi), var(--shadow-lg);
+  }
+  .media-choice .choice-ico { background: var(--accent-soft); color: var(--accent); }
+  .media-choice small { color: var(--muted); }
+  .media-choice.over { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .25), var(--shadow-lg); }
+  .choices-hint { text-align: center; font-size: 12.5px; color: var(--muted); margin: 14px 0 0; }
+
+  .or {
+    display: flex; align-items: center; gap: 12px;
+    max-width: 720px; margin: 22px auto 14px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+  }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
   .cam {
     position: fixed; inset: 0; z-index: 60;
@@ -601,6 +663,17 @@
     .formula .term svg { display: none; }
     .chips { gap: 4px; }
     .chips span { padding: 3px 6px; font-size: 11px; }
+    .choices { gap: 10px; }
+    .choice { min-height: 168px; padding: 18px; }
+    .choice-ico { width: 48px; height: 48px; border-radius: 14px; }
+    .choice-ico svg { width: 24px; height: 24px; }
+    .choice b { font-size: 21px; margin-top: 16px; }
+    .choice small { font-size: 12.5px; }
+    .cam-open { padding: 20px 18px; gap: 14px; }
+    .cam-open-ico { width: 52px; height: 52px; border-radius: 16px; }
+    .cam-open-ico svg { width: 26px; height: 26px; }
+    .cam-open-txt b { font-size: 20px; }
+    .cam-open-txt small { font-size: 12.5px; }
     .drop { padding-left: 14px; padding-right: 14px; }
   }
 </style>
@@ -643,43 +716,40 @@
   <section id="landing">
     <div class="hero">
       <h1>보이는 그대로,<br><span class="mirror-word" data-text="뒤집기"><span>뒤집기</span></span></h1>
-      <p><span class="line">사진과 동영상을 <span class="nowrap">좌우·상하로</span> 반전하고 <span class="nowrap">90°씩</span> 돌려서,</span> <span class="line">원본 화질 그대로 바로 저장하세요.</span></p>
+      <p><span class="line">카메라로 찍는 순간 좌우반전.</span> <span class="line">갖고 있는 사진·동영상도 <span class="nowrap">반전·회전·크기 조정</span>까지 바로 돼요.</span></p>
     </div>
 
-    <label class="drop" id="drop">
-      <input type="file" id="file" accept="image/*,video/*" hidden>
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
-      </div>
-      <strong>파일을 여기에 끌어다 놓으세요</strong>
-      <span class="hint">또는 버튼을 눌러 <span class="nowrap">사진·동영상을</span> 선택하세요</span><br>
-      <span class="pill">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        파일 선택
-      </span>
-      <div class="chips"><span>JPG</span><span>PNG</span><span>WEBP</span><span>MP4</span><span>MOV</span><span>WEBM</span></div>
-    </label>
-
-    <button class="cam-open" id="camOpen" type="button">
-      <span class="cam-open-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7.5 6.5H4.5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
-      </span>
-      <span class="cam-open-txt"><b>카메라로 바로 찍기</b><small>찍는 순간 좌우반전된 사진·영상으로 저장돼요</small></span>
-      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
-    </button>
+    <div class="choices">
+      <button class="choice cam-choice" id="camOpen" type="button">
+        <span class="choice-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7.5 6.5H4.5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        </span>
+        <b>카메라</b>
+        <small>찍는 순간 좌우반전</small>
+      </button>
+      <label class="choice media-choice" id="drop">
+        <input type="file" id="file" accept="image/*,video/*" hidden>
+        <span class="choice-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        </span>
+        <b>미디어 선택</b>
+        <small>사진·동영상 파일 열기</small>
+      </label>
+    </div>
+    <p class="choices-hint"><span class="line">파일을 화면에 끌어다 놓아도 돼요</span> <span class="line">· JPG PNG WEBP MP4 MOV WEBM</span></p>
 
     <div class="features">
+      <div class="feature">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7.5 6.5H4.5a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+        <div><b>찍으면서 반전</b><small>따로 변환할 필요 없이 바로 저장</small></div>
+      </div>
       <div class="feature">
         <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
         <div><b>업로드 없음</b><small>파일이 기기 밖으로 나가지 않아요</small></div>
       </div>
       <div class="feature">
         <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-        <div><b>빠른 변환</b><small>동영상도 재생 없이 몇 초 만에</small></div>
-      </div>
-      <div class="feature">
-        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 12h4M17 12h4"/></svg></div>
-        <div><b>원본 그대로</b><small>해상도와 소리를 유지해요</small></div>
+        <div><b>파일도 빠르게</b><small>동영상도 재생 없이 몇 초 만에</small></div>
       </div>
     </div>
   </section>
